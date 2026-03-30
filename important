@@ -1,1 +1,12 @@
-Pixel 9a path: /sys/class/udc/38100000.usb
+ USB path: /sys/class/udc/38100000.usb 
+ SoC temp: /sys/class/thermal/thermal_zone0/temp
+ Bat. Current: /sys/class/power_supply/max777x9_battery/current_now
+
+Power: 116 (KEY_POWER)
+Volume Up: 115 (KEY_VOLUMEUP)
+Volume Down: 114 (KEY_VOLUMEDOWN)
+Expected Path: /dev/input/event0 or event1.
+Uses the [gpio-keys] driver
+
+What to know: You must find the string in /sys/class/udc/. For this chipset, it is almost certainly 38100000.usb.
+Why it matters: Your configfs script will fail to "activate" the terminal or the data pipe unless you echo that exact string into the UDC file.
