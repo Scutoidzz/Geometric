@@ -3,9 +3,13 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Callable
 
+import serial
+
 import PyQt6.QtCore as QtCore
 import PyQt6.QtGui as QtGui
 import PyQt6.QtWidgets as QtWidgets
+
+from ui.feature.commands.curl import build_curl_screen, build_download_screen
 
 
 CommandHandler = Callable[[list[str]], None]
@@ -183,14 +187,20 @@ class GeometricTerminal(QtWidgets.QWidget):
         self.register_screen_command(
             "curl",
             title="Curl",
-            description="Fake Geometric curl dashboard. Replace this screen with your real curl UI when ready.",
-            screen_factory=self.build_curl_screen,
+            description="Build and stage HTTP requests for the connected phone.",
+            screen_factory=build_curl_screen,
         )
         self.register_screen_command(
             "status",
             title="Device Status",
             description="Example app screen for battery, USB, and thermal data.",
             screen_factory=self.build_status_screen,
+        )
+        self.register_screen_command(
+            "download",
+            title="Download",
+            description="Browse and stage downloads for the connected phone.",
+            screen_factory=build_download_screen,
         )
 
     def register_command(
@@ -353,35 +363,6 @@ class GeometricTerminal(QtWidgets.QWidget):
         body.setWordWrap(True)
         return body
 
-    def build_curl_screen(self, _: list[str]) -> QtWidgets.QWidget:
-        widget = QtWidgets.QWidget()
-        layout = QtWidgets.QVBoxLayout(widget)
-        layout.setContentsMargins(0, 8, 0, 0)
-        layout.setSpacing(10)
-
-        headline = QtWidgets.QLabel("HTTP request staging area")
-        headline_font = headline.font()
-        headline_font.setPointSize(15)
-        headline_font.setBold(True)
-        headline.setFont(headline_font)
-        layout.addWidget(headline)
-
-        for line in (
-            "Target: https://example.com/api",
-            "Method: GET",
-            "Headers: Authorization, Content-Type",
-            "Status: idle",
-        ):
-            layout.addWidget(QtWidgets.QLabel(line))
-
-        hint = QtWidgets.QLabel(
-            "Swap this placeholder out with the real curl dashboard once that UI is ready."
-        )
-        hint.setWordWrap(True)
-        layout.addWidget(hint)
-        layout.addStretch(1)
-        return widget
-
     def build_status_screen(self, _: list[str]) -> QtWidgets.QWidget:
         widget = QtWidgets.QWidget()
         layout = QtWidgets.QFormLayout(widget)
@@ -393,7 +374,6 @@ class GeometricTerminal(QtWidgets.QWidget):
         layout.addRow("Temperature", QtWidgets.QLabel("38.5 C"))
         layout.addRow("Task", QtWidgets.QLabel("waiting for client command"))
         return widget
-
 
 def build_demo_terminal() -> GeometricTerminal:
     terminal = GeometricTerminal()

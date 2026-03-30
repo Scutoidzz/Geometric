@@ -2,13 +2,13 @@ import PyQt6.QtWidgets as QtWidgets
 import PyQt6.QtCore as QtCore
 import os
 import sys
-from feature import plugin
 
 PROJECT_ROOT = os.path.dirname(os.path.dirname(__file__))
 if PROJECT_ROOT not in sys.path:
     sys.path.append(PROJECT_ROOT)
 
 from client.terminal import build_demo_terminal
+from ui.feature import plugin
 
 
 class PluginSignals(QtCore.QObject):
